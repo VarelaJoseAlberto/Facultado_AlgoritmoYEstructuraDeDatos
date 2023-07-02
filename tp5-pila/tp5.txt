@@ -1,0 +1,165 @@
+Tema: Tipo de datos PILA 
+1.  Considere el ADT PILA(item) visto en clase:  
+    a.  Agregue a la especificación algebraica del mismo las siguientes operaciones:  
+      i.  Una selectora: FONDO, que devuelve el item que se encuentra en el fondo de la pila. 
+     ii.  Una modificadora: POPFONDO, que elimina el ítem que se encuentra en el fondo de la pila. 
+    iii.  Un test: ESSIMETRICA, que retorna true si la pila es simétrica, caso contrario retorna false.
+
+sintaxis:
+    constructoras primitivas
+    PILAVACIA: -> PILA 
+    PUSH: PILA x ITEM -> PILA 
+    
+    test
+    ESPILAVACIA: PILA -> BOOL
+    ESSIMETRICA: PILA -> BOOL    
+
+    selectora
+    FONDO: PILA -> ITEM U {indefinido}
+    TOP: PILA -> ITEM U {indefinido}
+    
+    modificadora
+    POP: PILA -> PILA
+    POPFONDO: PILA -> PILA
+    PUSHF: PILA x ITEM -> PILA
+
+semantica: ∀ p1, p2 ∈ PILA, ∀ a,b,c ∈ ITEM 
+    
+    ESPILAVACIA(PILAVACIA) ≡ true
+    ESPILAVACIA(PUSH(p1, a)) ≡ false
+
+    TOP(PILAVACIA) ≡ indefinido
+    TOP(PUSH(p1, a)) ≡ a
+
+    POP(PILAVACIA) ≡ PILAVACIA
+    POP(PUSH(p1, a)) ≡ p1
+
+    FONDO(PILAVACIA) = indefinido
+    FONDO(PUSH(p1, a)) = si ESPILAVACIA(p1) entonces
+                            a
+                        sino 
+                            FONDO(p)
+
+    POPFONDO(PILAVACIA) ≡ PILAVACIA
+    POPFONDO(PUSH(p1, a)) ≡ si ESPILAVACIA(p1) entonces
+                                PILAVACIA
+                            sino
+                                POP(FONDO(p1))
+
+    ESSIMETRICA(PILAVACIA) ≡ true
+    ESSIMETRICA(PUSH(p1, a)) ≡ SI  a = FONDO(P) ENTONCES
+                            ESSIMETRICA(POPFONDO(p1))
+                        SINO
+                            FALSE
+
+
+
+b.  Como usuario del ADT PILA diseñe las siguientes funciones:  
+    i.  invertirLista, que recibe una lista enlazada y, con la ayuda de una pila auxiliar, 
+        retorna la lista construida en orden inverso. 
+    ii. incluida, que dadas dos pilas retorna true si los elementos de la primera pila se encuentran 
+        contenidos en la segunda pila, respetando el orden relativo de los mismos. 
+        Ejemplo:
+            |w|        	|w|         |w|
+            |c|         |b|         |c|
+            |y|         |y|         |y|
+        |c| |b|     |c|	|b|     |c| |t|
+        |b| |a|     |b| |a|     |b| |a|
+        |a| |X|     |a| |X|     |a| |X|
+         p1 p2      p1	p2       p1  p2      
+          TRUE        FALSE      FALSE
+
+    FUNCION invertirLista(p1): PILA -> PILA
+        pAux <- PILAVACIA
+        MIENTRAS NOT ESPILAVACIA(p1)
+            pAux <- PUSH(pAux, TOP(p1   ))
+            P1 <- POP(p1)
+        FIN MIENTRAS
+        RETORNA pAux
+    FIN FUNCION
+
+    FUNCION incluida(p1,p2): PILA x PILA -> BOOL
+        MIENTRAS NOT ESPILAVACIA(p1) HACER
+            SI TOP(p1) = TOP(p2) ENTONCES
+                POP(p1)
+                POP(p2)
+            SINO
+                POP(p2)
+            FIN SI
+            SI ESPILAVACIA(p1) ENTONCES
+                RETORNA TRUE
+            SI ESPILAVACIA(p2) ENTONCES
+                RETORNA FALSE
+            FIN SI
+        FIN MIENTRAS
+        RETORNA TRUE
+    FIN FUNCION
+
+2.  Teniendo en cuenta las operaciones del ADT PILA(item): PV (Pilavacia), Push, PushFondo (PushF), 
+    Pop, PopFondo (PopF), Top y Fondo indique en función de las constructoras primitivas cuál es la 
+    pila resultante en cada caso:  
+ 
+    a.  PushF(Push(PV,c),Fondo(Push(PopF(PushF(Push(PV,e),f)),g)))  
+    b.  Push(Push(Pop(Push(PushF(Push(PV,a),b),c)),a),Top(PushF(Push(PV,J),k)))
+
+    sintaxis:
+        PILAVACIA: -> PILA 
+        PUSH: PILA x ITEM -> PILA 
+        PUSHF: PILA x ITEM -> PILA
+
+    semantica:
+    TOP(PILAVACIA) ≡ indefinido
+    TOP(PUSH(p1, a)) ≡ a
+
+    POP(PILAVACIA) ≡ PILAVACIA
+    POP(PUSH(p1, a)) ≡ p1
+
+    FONDO(PILAVACIA) = indefinido
+    FONDO(PUSH(p1, a)) = si ESPILAVACIA(p1) entonces
+                            a
+                        sino 
+                            FONDO(p1)
+
+    POPFONDO(PILAVACIA) ≡ PILAVACIA
+    POPFONDO(PUSH(p1, a)) ≡ PUSH(POPFONDO(p1),a)
+
+    PUSHF(PILAVACIA, a) ≡ PUSH(PILAVACIA,a)
+    PUSHF(PUSH(p1,a), b) ≡ PUSH(PUSHF(p1,b),a)    
+    
+    a.  PushF(Push(PV,c),Fondo(Push(PopF(PushF(Push(PV,e),f)),g)))
+        p1=PV
+        a=c
+        b=Fondo(Push(PopF(PushF(Push(PV,e),f)),g))
+
+        * Push(PushF(PV,Fondo(Push(PopF(PushF(Push(PV,e),f)),g))),c)
+        PILAVACIA=PV
+        a=Fondo(Push(PopF(PushF(Push(PV,e),f)),g))
+
+        *Push(Push(PV,Fondo(Push(PopF(PushF(Push(PV,e),f)),g))),c)
+        p1=PopF(PushF(Push(PV,e),f))
+        a=g
+       
+        *Push(Push(PV,Fondo(PopF(PushF(Push(PV,e),f)))),c)       
+        PILAVACIA = PushF(Push(PV,e),f)
+        
+        *Push(Push(PV,Fondo(PushF(Push(PV,e),f))),c)       
+
+        *Push(Push(PV,Fondo(Push(PushF(PV,f),e))),c)       
+        
+        *Push(Push(PV,Fondo(Push(Push(PV,f),e))),c)    
+
+        *Push(Push(PV,f),c)    
+
+    b.  Push( Push( Pop( Push( PushF( Push( PV,a ), b ),c ) ),a ), Top( PushF( Push( PV,J ),k )  )
+    
+        Push( Push(  Push( PushF( Push( PV,a ), b ),c ) ,a ), Top( PushF( Push( PV,J ),k )  )  
+
+        Push( Push(  Push( Push( PushF( PV,b ), a ),c ) ,a ), Top( PushF( Push( PV,J ),k )  )  
+
+        Push( Push(  Push( Push( Push( PV,b ), a ),c ) ,a ), Top( PushF( Push( PV,J ),k )  ) 
+
+        Push( Push(  Push( Push( Push( PV,b ), a ),c ) ,a ), Top( Push( PushF( PV,k ),J )  ) 
+
+        Push( Push(  Push( Push( Push( PV,b ), a ),c ) ,a ), Top( Push( Push( PV,k ),J )  ) 
+
+        Push( Push(  Push( Push( Push( PV,b ), a ),c ) ,a ), Top( Push( Push( PV,k ),J )  ) 

@@ -1,0 +1,74 @@
+Tema: Tipo de datos FILA 
+1.  Agregue  a  la  especificación  algebraica  del  tipo  FILA(ITEM)  las  siguientes 
+operaciones:  
+        DEFILAX:  operación  que,  dada  una  Fila  y  un  ítem  X,  elimina  de  la  fila  los ítems iguales a X. 
+        ENFILAN: operación que, dada una Fila, un ítem y una cantidad, agrega a la fila el ítem tantas veces como indica la cantidad. 
+
+sintaxis:
+    constructoras primitivas
+    FILAVACIA: -> FILA
+    ENFILA: FILA x ITEM -> FILA
+    
+    modificadora
+    DEFILA: FILA -> FILA
+    FRENTE: FILA -> ITEM U {indefinido}
+    ENFILAN: FILA x ITEM x CANTIDAD -> FILA
+    DEFILAX: FILA x ITEM -> FILA
+
+    test
+    *ESFILAVACIA: FILA -> BOOL
+
+semantica: ∀ f1 ∈ FILA, ∀ a,b ∈ ITEM, ∀ n ∈ ENTERO
+
+    ESFILAVACIA(FILAVACIA) ≡ TRUE
+    ESFILAVACIA(ENFILA(f1,a)) ≡ FALSE
+
+    FRENTE(FILAVACIA) ≡ indefinido
+    FRENTE(ENFILA(f1,a)) ≡  si ESFILAVACIA(f1) entonces
+                                a
+                            sino
+                                FRENTE(f1)
+    
+    DEFILA(FILAVACIA) ≡ FILAVACIA
+    DEFILA(ENFILA(f1,a)) ≡  si ESFILAVACIA(f1) entonces
+                                FILAVACIA
+                            sino 
+                                ENFILA(DEFILA(f1),a)
+
+    DEFILAX(FILAVACIA,a) ≡ FILAVACIA
+    DEFILAX(ENFILA(f1,a),b) ≡   si a = b entonces
+                                    DEFILAX(f1,b)
+                                sino
+                                    ENFILA(DEFILAX(f1,b),a)
+
+    ENFILAN(f1,a,n) ≡ si n = 0 entonces
+                        f1
+                      sino
+                        ENFILAN(ENFILA(f1,a),a,n-1)
+
+2. Dada la siguiente operación Misterio del ADT FILA(ITEM), indique qué tarea
+realiza la misma y dé un nombre más adecuado a la función.
+Sintaxis:
+Misterio: Fila x Fila → Fila
+Semántica: ∀ F, G ∈ Fila, ∀ x, y ∈ item
+Misterio(Filavacia, G) ≡ Filavacia
+Misterio(Enfila(F,x),G) ≡ SI Pertenece(G, x) ENTONCES
+                                Misterio( F, G )
+                            SINO
+                                Enfila( Misterio( F, G ) ,x )
+respuesta: la funcion Misterio busca el elemento x en la fila G si no esta en la fila G lo 
+agrega a la fila F de lo contrario llama la funcion Misterio hasta que forma 
+
+3. Como usuario del ADT Fila diseñe una función recursiva CONCATN que, dadas
+dos Filas y un número entero positivo N, retorne la fila que resulta de concatenar a la
+primera fila los N primeros ítems de la segunda fila. 
+
+funcion CONCATN (f1, f2, N):fila x fila x item -> fila
+    SI N=0 or ESFILAVACIA(f2) entonces
+        retorna f1
+    SINO
+        SI ESFILAVACIA(f1) entonces
+            retorna CONCATN( ENFILA( FILAVACIA, FRENTE(f2) ), DEFILA( f2 ), N-1 )
+        SINO
+            retorna CONCATN( ENFILA( f1, FRENTE(f2) ), DEFILA( f2 ), N-1 )
+fin

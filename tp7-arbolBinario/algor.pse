@@ -1,0 +1,35 @@
+//Algoritmo ARBOL_DE_EXPRESION
+ENTRADA : EP(expresion_posfija)
+SALIDA : AE(arbol_expresion)
+AUX : P(pila auxiliar de arboles) ∈ PILA; c ∈ caracter; NAB(nuevo arbol binario), ADer(arbol derecho), AIzq(arbol izquierdo) ∈ ARBOL BINARIO
+
+
+A1: LEER(EP)
+Algoritmo ARBOL_DE_EXPRESION(expresion_posfija):
+    P <- PILAVACIA()  // Crear una pila auxiliar de arboles vacía
+
+    Para 0 Hasta LONGITUD_POSFIJA(EP) Con paso 1 Hacer { 
+        EL_ELEMENTO_ACTUAL <- EP[i]
+        Si EL_ELEMENTO_ACTUAL es operando Entonces
+            // Crear un nuevo árbol con el operando y agregarlo a la pila
+            NAB <- ARMARAB(ABVACIO, EL_ELEMENTO_ACTUAL, ABVACIO)
+            // Agregar a la pila el nuevo árbol se agrega a la pila auxiliar de árboles.
+            P <- PUSH(P, NAB)
+        SiNo EL_ELEMENTO_ACTUAL = operador Entonces
+            derecho  <-  POP(P)
+            izquierdo  <-  POP(P)
+            NAB <- ARMARAB(izquierdo,EL_ELEMENTO_ACTUAL,derecho)
+            P <- PUSH(P,NAB)
+        FinSi
+    FinPara
+    AE <- TOP(P) // El árbol de expresión final será el tope de la pila
+    Retornar AE
+FinAlgoritmo
+
+Algoritmo LONGITUD_POSFIJA(EP):
+    longitud=0
+    Mientras (!VACIO(EP)) Hacer
+    longitud++
+    FinMientras
+    RETONAR longitud
+FinAlgoritmo
